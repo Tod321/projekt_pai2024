@@ -17,7 +17,13 @@ const schema = new mongoose.Schema({
         message: props => `${props.value} nie jest prawidłową datą urodzenia`
         }, transform: value => value.toISOString().substr(0, 10)
     },
-    contractor_ids: { type: [ String ], required: false, default: [] }
+    contractor_ids: { type: [ String ], required: false, default: [] },
+    tasks: [{ // Dodane pole z zadaniami
+        name: String,
+        startDate: Date,
+        endDate: Date,
+        assignees: [{ type: String, ref: 'person' }]
+    }]
 }, {
     versionKey: false,
     additionalProperties: false
@@ -32,7 +38,6 @@ const project = module.exports = {
     },
 
     get: (req, res) => {
-        // pobierz wszystkie rekordy z bazy do zmiennej project
         let sort = {}
         if(req.query.sort) {
             sort[req.query.sort] = req.query.order == 'desc' ? -1 : 1
@@ -62,6 +67,7 @@ const project = module.exports = {
                 as: 'contractors'
             }
         })
+        
         project.model.aggregate([{ $facet: {
             total: [ matching, { $count: 'count' } ],
             data: aggregation
@@ -83,7 +89,6 @@ const project = module.exports = {
 
     post: (req, res) => {
         if(req.body) {
-            // utwórz obiekt na podstawie req.body, zwaliduj go i zapisz do bazy
             const item = new project.model(req.body)
             const err = item.validateSync()
             if(err) {
