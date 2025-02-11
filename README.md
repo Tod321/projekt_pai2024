@@ -3,7 +3,7 @@
 
 Pobranie ostatniej wersji do nowego katalogu ``pai2024``
 ```
-git clone https://gitlab.com/Tod321/projekt_pai.git
+git clone https://gitlab.com/Tod321/projekt_pai2024.git
 ```
 Aktualizacja posiadanego kodu do ostatniej wersji
 ```
